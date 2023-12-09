@@ -1,0 +1,27 @@
+name: Build Word game with Pygbag
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-pygbag:
+    name: Word finder game - Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout
+      run: |
+            echo "Attempting to install pygbag"
+            python -m pip install pygbag
+            echo "Successfully installed pygbag"
+            echo "Attempting to build the game"
+            python -m pygbag --build $GITHUB_WORKSPACE/wordle/main.py
+            echo "Successfully build the game and complied to WebAssembly"
+
+    - name : "Upload to GitHub pages branch gh-pages"
+      with:
+        branch: gh-pages
+        folder: wordle/build/web
