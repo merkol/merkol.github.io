@@ -6,9 +6,9 @@ import asyncio
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
-wrong_guess_sound = pygame.mixer.Sound('sounds/buzzer.ogg')  
+wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
 # Set up the display
-WIDTH, HEIGHT = 1000, 800
+WIDTH, HEIGHT = 1024, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hexagon Word Guessing Game")
 
@@ -72,7 +72,7 @@ async def main():
     global timer_running, active, guess, chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters, total_point,running
     while running:
         win.fill(WHITE)  # Fill the window with white color    
-        
+        await asyncio.sleep(0)
         # Display total point
         font = pygame.font.SysFont(None, 36)
         text = font.render('Total points: ' + str(total_point), True, BLACK)
@@ -162,9 +162,9 @@ async def main():
             text = font.render(letter, True, BLACK)
             win.blit(text, (offset_x + i * (hex_width + 10) - 10, offset_y - 20))
         
-        pygame.display.flip()  # Update the display
+        pygame.display.update()  # Update the display
 
     pygame.quit()  # Quit Pygame
 
-if __name__ == '__main__':
-    asyncio.run(main())
+
+asyncio.run(main())
