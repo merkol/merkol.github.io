@@ -6,7 +6,7 @@ import asyncio
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
-wrong_guess_sound = pygame.mixer.Sound('sounds/buzzer.mp3')  # Replace 'wrong_guess.wav' with your sound file
+wrong_guess_sound = pygame.mixer.Sound('sounds/buzzer.ogg')  
 # Set up the display
 WIDTH, HEIGHT = 1000, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
