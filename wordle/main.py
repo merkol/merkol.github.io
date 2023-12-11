@@ -9,9 +9,9 @@ pygame.mixer.init()  # Initialize the mixer for sound
 wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
 correct_guess_sound = pygame.mixer.Sound('sfx/correct.ogg')
 # Set up the display
-WIDTH, HEIGHT = 1024, 800
+WIDTH, HEIGHT = 1400, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Hexagon Word Guessing Game")
+pygame.display.set_caption("Altıgen Kelime Tahmin Etme Oyunu")
 
 # Define colors
 WHITE = (255, 255, 255)
@@ -22,7 +22,11 @@ letter_rect = pygame.Rect(WIDTH - 150, 200, 100, 50)  # Letter position and size
 
 
 # Create a dictionary of words and descriptions
-words = {"apple": "elma", "banana": "muz", "orange": "portakal", "grape": "uzum", "watermelon": "karpuz"}
+words = {"ABA": " … altından sopa göstermek” deyiminde boş bırakılan ve “kalın kumaş” anlamına gelen kelime nedir? ", 
+        "GÜZ": "Sonbahar kelimesinin eş anlamlısı nedir?",
+        "FİLE": "“… bekçisi” söz öbeğinde boş bırakılan ve “kaleci” kelimesinin dolaylaması olarak kullanılan sözcük nedir?",
+         "KARA": "Hem “Yeryüzünün denizle örtülü olmayan bölümü” hem de  “En koyu renk; siyah, ak, beyaz karşıtı” anlamına gelen sesteş sözcük nedir?", 
+         "YELKENLERİ": "“direnmekten vazgeçip karşısındakinin dediğini benimsemek” anlamına gelen “….. suya indirmek” deyiminde boş bırakılan yere gelmesi gereken sözcük nedir?"}
 
 
 def random_word(words):
@@ -102,7 +106,7 @@ async def main():
         for i in range(word_length):
             draw_hexagon(offset_x + i * (hex_width + 10), offset_y)
         
-        font = pygame.font.SysFont(None, 28)
+        font = pygame.font.SysFont(None, 24)
         text = font.render('Açıklama: ' + word_description, True, BLACK)
         text_rect = text.get_rect(midtop=(WIDTH // 2, offset_y + hex_height + 20))
         win.blit(text, text_rect)
@@ -152,7 +156,7 @@ async def main():
             elif event.type == pygame.KEYDOWN:
                 if active:  # Check if the input field is active
                     if event.key == pygame.K_RETURN:  # If Enter is pressed, check the guess
-                        if guess == chosen_word:
+                        if guess == chosen_word or guess.lower() == chosen_word.lower():
                             total_point += point_of_word
                             correct_guess_sound.play()
                             try:
@@ -185,7 +189,11 @@ async def main():
                         reveal_random_letter(chosen_word, indexes, guessed_letters)
                         point_of_word -= 100
                     except:
-                        continue
+                        try:
+                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(words)
+                        except IndexError:
+                            running = False
+                            break
                     
         # Render guessed letters
         font = pygame.font.SysFont(None, 36)
