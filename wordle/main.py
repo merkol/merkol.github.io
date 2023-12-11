@@ -71,9 +71,9 @@ time_limit = 120  # Two minutes in seconds
 async def main():
     start_time = pygame.time.get_ticks()  # Start time in milliseconds
     paused_time = 0
-    global timer_running, active, guess, chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters, total_point,running
+    global timer_running, active, guess, chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters, total_point, running
     while running:
-        
+         
         if not timer_running:
             ## quit game if paused time is more than 15 seconds
             if pygame.time.get_ticks() - paused_start_time > 15000:
@@ -139,11 +139,16 @@ async def main():
             timer_rect = timer_surface.get_rect(topright=(WIDTH - 20, 50))
             win.blit(timer_surface, timer_rect)
             
+        if remaining_time <= 0:
+            running = False
+            break
+            
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
+            # implement the event handling for touch events
+            elif event.type == pygame.FINGERDOWN:
                 if active:  # Check if the input field is active
                     if event.key == pygame.K_RETURN:  # If Enter is pressed, check the guess
                         if guess == chosen_word:
@@ -174,8 +179,11 @@ async def main():
                     # timer_running = False
                     active = True  # Toggle input field focus
                 if letter_rect.collidepoint(event.pos):
-                    reveal_random_letter(chosen_word, indexes, guessed_letters)
-                    point_of_word -= 100
+                    try:
+                        reveal_random_letter(chosen_word, indexes, guessed_letters)
+                        point_of_word -= 100
+                    except:
+                        continue
                     
         # Render guessed letters
         font = pygame.font.SysFont(None, 36)
