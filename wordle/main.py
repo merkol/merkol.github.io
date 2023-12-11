@@ -148,7 +148,7 @@ async def main():
             if event.type == pygame.QUIT:
                 running = False
             # implement the event handling for touch events
-            elif event.type == pygame.FINGERDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if active:  # Check if the input field is active
                     if event.key == pygame.K_RETURN:  # If Enter is pressed, check the guess
                         if guess == chosen_word:
