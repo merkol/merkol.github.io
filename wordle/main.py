@@ -7,6 +7,7 @@ import asyncio
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
 wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
+correct_guess_sound = pygame.mixer.Sound('sfx/correct.ogg')
 # Set up the display
 WIDTH, HEIGHT = 1024, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -153,6 +154,7 @@ async def main():
                     if event.key == pygame.K_RETURN:  # If Enter is pressed, check the guess
                         if guess == chosen_word:
                             total_point += point_of_word
+                            correct_guess_sound.play()
                             try:
                                 chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(words)
                             except IndexError:
