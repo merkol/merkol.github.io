@@ -29,7 +29,7 @@ print("Selected game number: ", random_game_num)
 
 
 sheet_name = f"{random_game_num}.OYUN"
-words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
+words_xlsx = pd.read_excel('wordle/sfx/sorular.xlsx', sheet_name=sheet_name)
 
 
 def turkish_replace(word):
