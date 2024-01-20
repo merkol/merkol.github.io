@@ -7,8 +7,8 @@ import pandas as pd
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
-wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
-correct_guess_sound = pygame.mixer.Sound('sfx/correct.ogg')
+wrong_guess_sound = pygame.mixer.Sound('wordle/sfx/buzzer.ogg')  
+correct_guess_sound = pygame.mixer.Sound('wordle/sfx/correct.ogg')
 
 # Set up the display
 WIDTH, HEIGHT = 1400, 800
@@ -29,7 +29,7 @@ print("Selected game number: ", random_game_num)
 
 
 sheet_name = f"{random_game_num}.OYUN"
-words_xlsx = pd.read_excel('sorular.xlsx', sheet_name=sheet_name)
+words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
 
 
 def turkish_replace(word):
