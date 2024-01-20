@@ -2,12 +2,14 @@ import pygame
 import random
 import math
 import asyncio
+import pandas as pd
 
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
 wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
 correct_guess_sound = pygame.mixer.Sound('sfx/correct.ogg')
+
 # Set up the display
 WIDTH, HEIGHT = 1400, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -21,13 +23,34 @@ button_rect = pygame.Rect(WIDTH - 150, 100, 125, 50)  # Button position and size
 letter_rect = pygame.Rect(WIDTH - 150, 200, 100, 50)  # Letter position and size
 
 
-# Create a dictionary of words and descriptions
-words = {"ABA": " … altından sopa göstermek” deyiminde boş bırakılan ve “kalın kumaş” anlamına gelen kelime nedir? ", 
-        "GÜZ": "Sonbahar kelimesinin eş anlamlısı nedir?",
-        "FİLE": "“… bekçisi” söz öbeğinde boş bırakılan ve “kaleci” kelimesinin dolaylaması olarak kullanılan sözcük nedir?",
-         "KARA": "Hem “Yeryüzünün denizle örtülü olmayan bölümü” hem de  “En koyu renk; siyah, ak, beyaz karşıtı” anlamına gelen sesteş sözcük nedir?", 
-         "YELKENLERİ": "“direnmekten vazgeçip karşısındakinin dediğini benimsemek” anlamına gelen “….. suya indirmek” deyiminde boş bırakılan yere gelmesi gereken sözcük nedir?"}
 
+random_game_num = random.randint(1, 30)
+print("Selected game number: ", random_game_num)
+
+
+sheet_name = f"{random_game_num}.OYUN"
+words_xlsx = pd.read_excel('sorular.xlsx', sheet_name=sheet_name)
+
+
+def turkish_replace(word):
+    word = word.replace('İ', 'i')
+    word = word.replace('Ç', 'ç')
+    word = word.replace('Ş', 'ş')
+    word = word.replace('Ğ', 'ğ')
+    word = word.replace('Ü', 'ü')
+    word = word.replace('Ö', 'ö')
+    word = word.replace('I', 'ı')
+    return word
+
+def random_word_xlsx(words_xlsx):
+    chosen_word = random.choice(words_xlsx.iloc[:,1].values)
+    word_length = len(chosen_word)
+    word_description = words_xlsx.loc[words_xlsx['CEVAP'] == chosen_word, 'SORU'].iloc[0]
+    indexes = [i for i in range(len(chosen_word))]
+    point_of_word = 100 * len(chosen_word)
+    guessed_letters = ['_'] * word_length
+    words_xlsx = words_xlsx.drop(words_xlsx.loc[words_xlsx['CEVAP'] == chosen_word].index, inplace=True)
+    return chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters
 
 def random_word(words):
     chosen_word = random.choice(list(words.keys()))
@@ -60,7 +83,7 @@ def draw_hexagon(x, y):
     pygame.draw.polygon(win, BLACK, points, 2)
 
 # Function to reveal a random letter
-chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(words)
+chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
 guess = ''
 guess_font = pygame.font.SysFont(None, 36)
 input_rect = pygame.Rect(50, 300, 300, 40)  # Input field position and size
@@ -156,11 +179,11 @@ async def main():
             elif event.type == pygame.KEYDOWN:
                 if active:  # Check if the input field is active
                     if event.key == pygame.K_RETURN:  # If Enter is pressed, check the guess
-                        if guess == chosen_word or guess.lower() == chosen_word.lower():
+                        if guess == chosen_word or turkish_replace(guess).lower() == turkish_replace(chosen_word).lower():
                             total_point += point_of_word
                             correct_guess_sound.play()
                             try:
-                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(words)
+                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
                             except IndexError:
                                 running = False
                                 break
@@ -190,7 +213,7 @@ async def main():
                         point_of_word -= 100
                     except:
                         try:
-                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(words)
+                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
                         except IndexError:
                             running = False
                             break
