@@ -17,7 +17,8 @@ jobs:
             echo "Attempting to install pygbag"
             python -m pip install pygbag
             echo "Successfully installed pygbag"
-            pip install pandas
+            python -m pip install pandas
+            python -m pip install openpyxl
             echo "Pandas has installed"
             echo "Attempting to build the game"
             python -m pygbag --ume_block 0 --build $GITHUB_WORKSPACE/wordle/main.py
