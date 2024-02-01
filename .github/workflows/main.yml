@@ -19,6 +19,7 @@ jobs:
             echo "Successfully installed pygbag"
             python -m pip install pandas
             python -m pip install openpyxl
+            sudo apt install ffmpeg
             echo "Pandas has installed"
             echo "Attempting to build the game"
             python -m pygbag --ume_block 0 --build $GITHUB_WORKSPACE/wordle/main.py
