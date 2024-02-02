@@ -4,7 +4,6 @@
 # ]
 # requires-python = ">=3.10"
 # ///
-import numpy as np
 import pandas as pd
 import pygame
 import random
@@ -36,11 +35,11 @@ print("Selected game number: ", random_game_num)
 
 ## np read csv
 
-words_xlsx = np.loadtxt('wordle/sorular.csv', delimiter=',', encoding='utf-8', dtype=str, usecols=(0,1), skiprows=1)
+# words_xlsx = np.loadtxt('wordle/sorular.csv', delimiter=',', encoding='utf-8', dtype=str, usecols=(0,1), skiprows=1)
 
 
-# sheet_name = f"{random_game_num}.OYUN"
-# words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
+sheet_name = f"{random_game_num}.OYUN"
+words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
 
 
 
@@ -54,16 +53,6 @@ def turkish_replace(word):
     word = word.replace('I', 'ı')
     return word
 
-
-def random_word_csv(words_csv):
-    chosen_word = random.choice(words_csv[:,1])
-    word_length = len(chosen_word)
-    word_description = words_csv[np.where(words_csv[:,1] == chosen_word)[0][0]][0]
-    indexes = [i for i in range(len(chosen_word))]
-    point_of_word = 100 * len(chosen_word)
-    guessed_letters = ['_'] * word_length
-    words_csv = np.delete(words_csv, np.where(words_csv[:,1] == chosen_word)[0][0], axis=0)
-    return chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters
 
 def random_word_xlsx(words_xlsx):
     chosen_word = random.choice(words_xlsx.iloc[:,1].values)
@@ -106,7 +95,7 @@ def draw_hexagon(x, y):
     pygame.draw.polygon(win, BLACK, points, 2)
 
 # Function to reveal a random letter
-chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_csv(words_xlsx)
+chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
 guess = ''
 guess_font = pygame.font.SysFont(None, 36)
 input_rect = pygame.Rect(50, 300, 300, 40)  # Input field position and size
@@ -206,7 +195,7 @@ async def main():
                             total_point += point_of_word
                             correct_guess_sound.play()
                             try:
-                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_csv(words_xlsx)
+                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
                             except IndexError:
                                 running = False
                                 break
@@ -236,7 +225,7 @@ async def main():
                         point_of_word -= 100
                     except:
                         try:
-                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_csv(words_xlsx)
+                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
                         except IndexError:
                             running = False
                             break
