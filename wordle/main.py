@@ -4,7 +4,7 @@
 # ]
 # requires-python = ">=3.10"
 # ///
-import pandas as pd
+import json
 import pygame
 import random
 import math
@@ -13,8 +13,8 @@ import asyncio
 # Initialize Pygame
 pygame.init()
 pygame.mixer.init()  # Initialize the mixer for sound
-wrong_guess_sound = pygame.mixer.Sound('wordle/sfx/buzzer.ogg')  
-correct_guess_sound = pygame.mixer.Sound('wordle/sfx/correct.ogg')
+wrong_guess_sound = pygame.mixer.Sound('sfx/buzzer.ogg')  
+correct_guess_sound = pygame.mixer.Sound('sfx/correct.ogg')
 
 # Set up the display
 WIDTH, HEIGHT = 1400, 800
@@ -33,14 +33,10 @@ random_game_num = random.randint(1, 30)
 print("Selected game number: ", random_game_num)
 
 
-## np read csv
-
-# words_xlsx = np.loadtxt('wordle/sorular.csv', delimiter=',', encoding='utf-8', dtype=str, usecols=(0,1), skiprows=1)
-
-
 sheet_name = f"{random_game_num}.OYUN"
-words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
+# words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
 
+json_data = json.loads(open('sheet1.json').read())
 
 
 def turkish_replace(word):
@@ -65,13 +61,14 @@ def random_word_xlsx(words_xlsx):
     return chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters
 
 def random_word(words):
-    chosen_word = random.choice(list(words.keys()))
+    random_key = random.choice(list(words.keys()))
+    chosen_word = words[random_key]["answer"]
     word_length = len(chosen_word)
-    word_description = words[chosen_word]
+    word_description = words[random_key]["description"]
     indexes = [i for i in range(len(chosen_word))]
     point_of_word = 100 * len(chosen_word)
     guessed_letters = ['_'] * word_length
-    words.pop(chosen_word)
+    words.pop(random_key)
     return chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters
 
 def reveal_random_letter(chosen_word, indexes, guessed_letters):
@@ -95,7 +92,7 @@ def draw_hexagon(x, y):
     pygame.draw.polygon(win, BLACK, points, 2)
 
 # Function to reveal a random letter
-chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
+chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(json_data)
 guess = ''
 guess_font = pygame.font.SysFont(None, 36)
 input_rect = pygame.Rect(50, 300, 300, 40)  # Input field position and size
@@ -195,7 +192,7 @@ async def main():
                             total_point += point_of_word
                             correct_guess_sound.play()
                             try:
-                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
+                                chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(json_data)
                             except IndexError:
                                 running = False
                                 break
@@ -225,7 +222,7 @@ async def main():
                         point_of_word -= 100
                     except:
                         try:
-                            chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word_xlsx(words_xlsx)
+                           chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(json_data)
                         except IndexError:
                             running = False
                             break
