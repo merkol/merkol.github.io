@@ -162,6 +162,9 @@ async def main():
                 break
         
         
+        # put logo on the screen
+        x =  (WIDTH * 0.2)
+        y = (HEIGHT * 0.6)
         win.blit(logo, (50, 20))
         pygame.display.flip()
         
@@ -186,7 +189,7 @@ async def main():
         for i in range(word_length):
             draw_hexagon(offset_x + i * (hex_width + 10), offset_y)
         
-        font = pygame.font.SysFont(None, 28)
+        font = pygame.font.SysFont(None, 28)   
         blit_text(win, word_description, (WIDTH // 2 - 400, 100 + hex_height + 20), font, BLACK)
         pygame.display.update()
         
