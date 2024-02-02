@@ -30,13 +30,10 @@ letter_rect = pygame.Rect(WIDTH - 150, 200, 100, 50)  # Letter position and size
 
 
 random_game_num = random.randint(1, 30)
-print("Selected game number: ", random_game_num)
 
 
-sheet_name = f"{random_game_num}.OYUN"
-# words_xlsx = pd.read_excel('wordle/sorular.xlsx', sheet_name=sheet_name)
-
-json_data = json.loads(open('sheet1.json').read())
+sheet_name = f"{random_game_num}.OYUN.json"
+json_data = json.loads(open(f'sorular/{sheet_name}').read())
 
 
 def turkish_replace(word):
