@@ -185,7 +185,6 @@ async def main():
         # Draw hexagon grid for guessed letters
         offset_x = 350
         offset_y = 350  # Adjust the offset to position the hexagons lower
-        text_offset_y = offset_y - 30  # Offset for the text above hexagons
         for i in range(word_length):
             draw_hexagon(offset_x + i * (hex_width + 10), offset_y)
         
