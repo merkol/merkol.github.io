@@ -25,6 +25,60 @@ pygame.display.set_caption("Altıgen Kelime Tahmin Etme Oyunu")
 # Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+## logo
+logo = pygame.image.load('logo.png')
+
+## resize the logo
+logo = pygame.transform.scale(logo, (200, 200))
+
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    max_width -= 200
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+
+def vertical(size, startcolor, endcolor):
+    """
+    Draws a vertical linear gradient filling the entire surface. Returns a
+    surface filled with the gradient (numeric is only 2-3 times faster).
+    """
+    height = size[1]
+    bigSurf = pygame.Surface((1,height)).convert_alpha()
+    dd = 1.0/height
+    sr, sg, sb, sa = startcolor
+    er, eg, eb, ea = endcolor
+    rm = (er-sr)*dd
+    gm = (eg-sg)*dd
+    bm = (eb-sb)*dd
+    am = (ea-sa)*dd
+    for y in range(height):
+        bigSurf.set_at((0,y),
+                        (int(sr + rm*y),
+                         int(sg + gm*y),
+                         int(sb + bm*y),
+                         int(sa + am*y))
+                      )
+    return pygame.transform.scale(bigSurf, size)
+
+
+# vertical_gradient = vertical((WIDTH, HEIGHT), (255, 255, 255, 255), (0, 0, 255, 255))
+vertical_gradient = vertical((WIDTH, HEIGHT), (206, 255, 218, 255), (149, 185, 254, 255))
+
 
 button_rect = pygame.Rect(WIDTH - 150, 100, 125, 50)  # Button position and size
 letter_rect = pygame.Rect(WIDTH - 150, 200, 100, 50)  # Letter position and size
@@ -107,7 +161,7 @@ time_limit = 120  # Two minutes in seconds
 async def main():
     start_time = pygame.time.get_ticks()  # Start time in milliseconds
     paused_time = 0
-    global timer_running, active, guess, chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters, total_point, running
+    global timer_running, active, guess, chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters, total_point, running, vertical_gradient, logo
     while running:
          
         if not timer_running:
@@ -116,8 +170,16 @@ async def main():
                 ## display a message
                 running = False
                 break
-            
-        win.fill(WHITE)  # Fill the window with white color    
+        
+        
+        # put logo on the screen
+        x =  (WIDTH * 0.2)
+        y = (HEIGHT * 0.6)
+        win.blit(logo, (x, y))
+        pygame.display.flip()
+        
+        # win.fill(WHITE)  # Fill the window with white color    
+        win.blit(vertical_gradient, (0, 0))
         await asyncio.sleep(0)
         
         # Display total point
@@ -138,19 +200,22 @@ async def main():
             draw_hexagon(offset_x + i * (hex_width + 10), offset_y)
         
         font = pygame.font.SysFont(None, 24)
-        text = font.render('Açıklama: ' + word_description, True, BLACK)
-        text_rect = text.get_rect(midtop=(WIDTH // 2, offset_y + hex_height + 20))
-        win.blit(text, text_rect)
+        # text = font.render(word_description, True, BLACK)
+        # text_rect = text.get_rect(midtop=(WIDTH // 2, offset_y + hex_height + 20))
+        # win.blit(text, text_rect)
+        
+        blit_text(win, word_description, (WIDTH // 2 - 400, offset_y + hex_height + 20), font, BLACK)
+        pygame.display.update()
         
         # Draw the button
-        pygame.draw.rect(win, BLACK, button_rect)  # Draw the button rectangle
+        pygame.draw.rect(win, RED, button_rect)  # Draw the button rectangle
         font = pygame.font.SysFont(None, 24)
         text = font.render("Süreyi Durdur", True, WHITE)
         text_rect = text.get_rect(center=button_rect.center)
         win.blit(text, text_rect)  # Display text on the button
         
         # Draw the letter button
-        pygame.draw.rect(win, BLACK, letter_rect)  # Draw the button rectangle
+        pygame.draw.rect(win, GREEN, letter_rect)  # Draw the button rectangle
         font = pygame.font.SysFont(None, 24)
         text = font.render("Harf Al", True, WHITE)
         text_rect = text.get_rect(center=letter_rect.center)
@@ -239,7 +304,7 @@ async def main():
     final_score_font = pygame.font.SysFont(None, 48)
     final_score_text = final_score_font.render(f'Toplam Skor: {total_point}', True, BLACK)
     final_score_rect = final_score_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    win.fill(WHITE)  # Clear the screen
+    win.blit(vertical_gradient, (0, 0))
     win.blit(final_score_text, final_score_rect)
     pygame.display.update()
 
