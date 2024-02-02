@@ -1,9 +1,3 @@
-# /// script
-# dependencies = [
-#  "pandas"
-# ]
-# requires-python = ">=3.10"
-# ///
 import json
 import pygame
 import random
@@ -27,6 +21,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+NAVY = (0, 0, 128)
 
 ## logo
 logo = pygame.image.load('logo.png')
@@ -53,10 +48,6 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
         y += word_height  # Start on new row.
 
 def vertical(size, startcolor, endcolor):
-    """
-    Draws a vertical linear gradient filling the entire surface. Returns a
-    surface filled with the gradient (numeric is only 2-3 times faster).
-    """
     height = size[1]
     bigSurf = pygame.Surface((1,height)).convert_alpha()
     dd = 1.0/height
@@ -76,7 +67,6 @@ def vertical(size, startcolor, endcolor):
     return pygame.transform.scale(bigSurf, size)
 
 
-# vertical_gradient = vertical((WIDTH, HEIGHT), (255, 255, 255, 255), (0, 0, 255, 255))
 vertical_gradient = vertical((WIDTH, HEIGHT), (206, 255, 218, 255), (149, 185, 254, 255))
 
 
@@ -148,7 +138,7 @@ def draw_hexagon(x, y):
 chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(json_data)
 guess = ''
 guess_font = pygame.font.SysFont(None, 36)
-input_rect = pygame.Rect(50, 300, 300, 40)  # Input field position and size
+input_rect = pygame.Rect(300, 450, 300, 40)  # Input field position and size
 active = False  # Flag to control the input field focus
 
 # Game loop
@@ -175,7 +165,7 @@ async def main():
         # put logo on the screen
         x =  (WIDTH * 0.2)
         y = (HEIGHT * 0.6)
-        win.blit(logo, (x, y))
+        win.blit(logo, (50, 20))
         pygame.display.flip()
         
         # win.fill(WHITE)  # Fill the window with white color    
@@ -185,26 +175,26 @@ async def main():
         # Display total point
         font = pygame.font.SysFont(None, 36)
         text = font.render('Toplam puan: ' + str(total_point), True, BLACK)
-        win.blit(text, (50, 20))
+        win.blit(text, (1100, 400))
 
         # Display remaining word point
         font = pygame.font.SysFont(None, 36)
         text = font.render('Kalan Harf Puanı: ' + str(point_of_word), True, BLACK)
-        win.blit(text, (50, 50))
+        win.blit(text, (1100, 420))
         
         # Draw hexagon grid for guessed letters
-        offset_x = 50
-        offset_y = 150  # Adjust the offset to position the hexagons lower
+        offset_x = 350
+        offset_y = 350  # Adjust the offset to position the hexagons lower
         text_offset_y = offset_y - 30  # Offset for the text above hexagons
         for i in range(word_length):
             draw_hexagon(offset_x + i * (hex_width + 10), offset_y)
         
-        font = pygame.font.SysFont(None, 24)
+        font = pygame.font.SysFont(None, 28)
         # text = font.render(word_description, True, BLACK)
         # text_rect = text.get_rect(midtop=(WIDTH // 2, offset_y + hex_height + 20))
         # win.blit(text, text_rect)
         
-        blit_text(win, word_description, (WIDTH // 2 - 400, offset_y + hex_height + 20), font, BLACK)
+        blit_text(win, word_description, (WIDTH // 2 - 400, 100 + hex_height + 20), font, BLACK)
         pygame.display.update()
         
         # Draw the button
@@ -215,7 +205,7 @@ async def main():
         win.blit(text, text_rect)  # Display text on the button
         
         # Draw the letter button
-        pygame.draw.rect(win, GREEN, letter_rect)  # Draw the button rectangle
+        pygame.draw.rect(win, NAVY, letter_rect)  # Draw the button rectangle
         font = pygame.font.SysFont(None, 24)
         text = font.render("Harf Al", True, WHITE)
         text_rect = text.get_rect(center=letter_rect.center)
