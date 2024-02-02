@@ -9,6 +9,7 @@ import pygame
 import random
 import math
 import asyncio
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -28,9 +29,10 @@ BLACK = (0, 0, 0)
 button_rect = pygame.Rect(WIDTH - 150, 100, 125, 50)  # Button position and size
 letter_rect = pygame.Rect(WIDTH - 150, 200, 100, 50)  # Letter position and size
 
+seed_value = int(time.time())
+random.seed(seed_value)
 
 random_game_num = random.randint(1, 30)
-
 
 sheet_name = f"{random_game_num}.OYUN.json"
 json_data = json.loads(open(f'sorular/{sheet_name}').read())
