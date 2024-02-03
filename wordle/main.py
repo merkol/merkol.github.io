@@ -93,18 +93,8 @@ def turkish_replace(word):
     return word
 
 
-def random_word_xlsx(words_xlsx):
-    chosen_word = random.choice(words_xlsx.iloc[:,1].values)
-    word_length = len(chosen_word)
-    word_description = words_xlsx.loc[words_xlsx['CEVAP'] == chosen_word, 'SORU'].iloc[0]
-    indexes = [i for i in range(len(chosen_word))]
-    point_of_word = 100 * len(chosen_word)
-    guessed_letters = ['_'] * word_length
-    words_xlsx = words_xlsx.drop(words_xlsx.loc[words_xlsx['CEVAP'] == chosen_word].index, inplace=True)
-    return chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters
-
 def random_word(words):
-    random_key = random.choice(list(words.keys()))
+    random_key = list(words.keys())[0]
     chosen_word = words[random_key]["answer"]
     word_length = len(chosen_word)
     word_description = words[random_key]["description"]
@@ -163,8 +153,6 @@ async def main():
         
         
         # put logo on the screen
-        x =  (WIDTH * 0.2)
-        y = (HEIGHT * 0.6)
         win.blit(logo, (50, 20))
         pygame.display.flip()
         
