@@ -146,7 +146,7 @@ running = True
 total_point = 0
 
 timer_running = True
-time_limit = 120  # Two minutes in seconds
+time_limit = 300  # Two minutes in seconds
 
 async def main():
     start_time = pygame.time.get_ticks()  # Start time in milliseconds
