@@ -16,7 +16,7 @@ jobs:
       run: |
             echo "Attempting to install pygbag"
             python -m pip install pygbag
-            sudo apt get update
+            sudo apt update
             echo "Successfully installed pygbag"
             sudo apt install ffmpeg
             echo "Attempting to build the game"
