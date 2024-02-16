@@ -145,8 +145,8 @@ async def main():
     while running:
          
         if not timer_running:
-            ## quit game if paused time is more than 15 seconds
-            if pygame.time.get_ticks() - paused_start_time > 30000:
+            ## quit game if paused time is more than 75 seconds
+            if pygame.time.get_ticks() - paused_start_time > 75000:
                 chosen_word, word_length, word_description, indexes, point_of_word, guessed_letters = random_word(json_data)
                 timer_running = True
                 pygame.display.update()
